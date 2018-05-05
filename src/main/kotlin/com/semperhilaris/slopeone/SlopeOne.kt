@@ -2,6 +2,7 @@ package com.semperhilaris.slopeone
 
 import java.util.HashMap
 import org.slf4j.LoggerFactory
+import java.math.BigDecimal
 
 /**
  * Slope One collaborative filtering for rated resources.
@@ -80,7 +81,7 @@ class SlopeOne {
         }
         for ((key1, value1) in predictions) {
             if (!predictRequest.entries.containsKey(key1.label) && frequencies[key1]!! > 0) {
-                predictResponse.predictions[key1.label] = value1/frequencies[key1]!!.toDouble()
+                predictResponse.predictions[key1.label] = (value1/frequencies[key1]!!).roundTo2DecimalPlaces()
             }
         }
         logger.info("Predicted {} ratings.", predictResponse.predictions.size)
@@ -100,4 +101,7 @@ class SlopeOne {
         }
         return item
     }
+
+    private fun Double.roundTo2DecimalPlaces() =
+            BigDecimal(this).setScale(2, BigDecimal.ROUND_HALF_UP).toDouble()
 }
