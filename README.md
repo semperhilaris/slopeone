@@ -21,7 +21,7 @@ $ ./gradlew shadowJar
 Once the JAR has been built, the app is started using:
 
 ```sh
-$ java -jar build/libs/slopeone-1.0-SNAPSHOT-all.jar
+$ java -jar build/libs/slopeone-1.1-SNAPSHOT-all.jar
 ```
 
 The web server will be running on `http://localhost:4567`
