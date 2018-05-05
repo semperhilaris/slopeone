@@ -9,17 +9,17 @@ import spark.Spark.*
  */
 fun main(args: Array<String>) {
 
-    val slopeOne = SlopeOne()
+    val slopeOneGlobal = SlopeOne()
     val gson = Gson()
 
     get("/status", { req, res ->
         res.status(200)
         res.type("application/json")
-        gson.toJson(slopeOne.status())
+        gson.toJson(slopeOneGlobal.status())
     })
 
     get("/clear", { req, res ->
-        slopeOne.clear()
+        slopeOneGlobal.clear()
         res.status(200)
         res.type("application/json")
         gson.toJson("Data cleared.")
@@ -27,7 +27,7 @@ fun main(args: Array<String>) {
 
     put("/ratings", { req, res ->
         val updateRequest = gson.fromJson(req.body(), UpdateRequest::class.java)
-        slopeOne.update(updateRequest)
+        slopeOneGlobal.update(updateRequest)
         res.status(201)
         res.type("application/json")
         gson.toJson("Ratings added.")
@@ -35,7 +35,18 @@ fun main(args: Array<String>) {
 
     post("/predict", { req, res ->
         val predictRequest = gson.fromJson(req.body(), PredictRequest::class.java)
-        val predictResponse = slopeOne.predict(predictRequest)
+        val predictResponse = slopeOneGlobal.predict(predictRequest)
+        res.status(201)
+        res.type("application/json")
+        gson.toJson(predictResponse)
+    })
+
+    post("/predict-with-ratings", { req, res ->
+        val slopeOneLocal = SlopeOne()
+        val predictWithRatingsRequest = gson.fromJson(req.body(), PredictWithRatingsRequest::class.java)
+        slopeOneLocal.update(predictWithRatingsRequest.ratings)
+        val predictResponse = slopeOneLocal.predict(predictWithRatingsRequest.predict)
+        slopeOneLocal.clear()
         res.status(201)
         res.type("application/json")
         gson.toJson(predictResponse)

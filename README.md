@@ -126,3 +126,59 @@ Response:
   }
 }
 ````
+
+### Predict with ratings
+
+Combines /ratings and /predict into a single request.
+Uses a separate instance of the engine to avoid interfering with other requests.
+
+Request:
+````
+POST /predict-with-ratings
+Content-Type: application/json
+Payload:
+{
+  "ratings": {
+    "entries": [
+      {
+        "item1": 1,
+        "item2": 0.5,
+        "item3": 0.2
+      },
+      {
+        "item1": 1,
+        "item3": 0.5,
+        "item4": 0.2
+      },
+      {
+        "item1": 0.2,
+        "item2": 0.4,
+        "item3": 1,
+        "item4": 0.4
+      },
+      {
+        "item2": 0.9,
+        "item3": 0.4,
+        "item4": 0.5
+      }
+    ]
+  },
+  "predict": {
+    "entries":
+      {
+        "item1": 0.4
+      }
+  }
+}
+````
+
+Response:
+````
+{
+  "predictions": {
+    "item2": 0.25,
+    "item3": 0.23333333333333336,
+    "item4": 0.09999999999999998
+  }
+}
+````
