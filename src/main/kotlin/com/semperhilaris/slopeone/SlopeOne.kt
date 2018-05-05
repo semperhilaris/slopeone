@@ -1,11 +1,14 @@
 package com.semperhilaris.slopeone
 
 import java.util.HashMap
+import org.slf4j.LoggerFactory
 
 /**
  * Slope One collaborative filtering for rated resources.
  */
 class SlopeOne {
+
+    private var logger = LoggerFactory.getLogger(this::class.java)!!
 
     private val items = HashMap<String, Item>()
     private val diffs = HashMap<Item, HashMap<Item, Double>>()
@@ -24,14 +27,17 @@ class SlopeOne {
     fun clear() {
         diffs.clear()
         freqs.clear()
+        logger.info("Data cleared.")
     }
 
     /**
      * Update matrices with user preference data.
      */
     fun update(updateRequest: UpdateRequest) {
+        var ratingCount = 0
         for (entry in updateRequest.entries) {
             for ((key1, value1) in entry) {
+                ratingCount++
                 val item1 = getItem(key1)
                 if (!freqs.containsKey(item1)) { freqs[item1] = HashMap() }
                 if (!diffs.containsKey(item1)) { diffs[item1] = HashMap() }
@@ -49,6 +55,7 @@ class SlopeOne {
                 diffs[item1]!![item2] = diffs[item1]!![item2]!! / freqs[item1]!![item2]!!.toDouble()
             }
         }
+        logger.info("Processed {} entries with {} ratings.", updateRequest.entries.size, ratingCount)
     }
 
     /**
@@ -76,6 +83,7 @@ class SlopeOne {
                 predictResponse.predictions[key1.label] = value1/frequencies[key1]!!.toDouble()
             }
         }
+        logger.info("Predicted {} ratings.", predictResponse.predictions.size)
         return predictResponse
     }
 
