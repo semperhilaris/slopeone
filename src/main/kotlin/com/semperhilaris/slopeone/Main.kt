@@ -3,7 +3,6 @@ package com.semperhilaris.slopeone
 import com.google.gson.Gson
 import spark.Spark.*
 
-
 /**
  * Slope One webservice.
  */
